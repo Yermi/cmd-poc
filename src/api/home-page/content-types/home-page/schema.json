@@ -17,6 +17,9 @@
     },
     "SubTitle": {
       "type": "string"
+    },
+    "Note": {
+      "type": "text"
     }
   }
 }

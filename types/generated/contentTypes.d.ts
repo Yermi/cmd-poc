@@ -460,6 +460,7 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
       'api::home-page.home-page'
     > &
       Schema.Attribute.Private;
+    Note: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
     SubTitle: Schema.Attribute.String;
     Title: Schema.Attribute.String & Schema.Attribute.Required;
