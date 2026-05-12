@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_extandend_enumerations",
+  "info": {
+    "displayName": "ExtandendEnumeration"
+  },
+  "options": {},
+  "attributes": {
+    "Text": {
+      "type": "string"
+    },
+    "Value": {
+      "type": "integer"
+    }
+  },
+  "config": {}
+}

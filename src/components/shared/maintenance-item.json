@@ -11,13 +11,6 @@
     "MaintenanceTitle": {
       "type": "string"
     },
-    "DialogType": {
-      "type": "enumeration",
-      "enum": [
-        "Information",
-        "Block"
-      ]
-    },
     "IsEnabled": {
       "type": "boolean",
       "default": false
@@ -33,6 +26,11 @@
     },
     "UnpublishAt": {
       "type": "datetime"
+    },
+    "DialogTyped": {
+      "type": "component",
+      "component": "shared.extandend-enumeration",
+      "repeatable": true
     }
   },
   "config": {}
