@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_maintenance_items",
+  "info": {
+    "displayName": "Maintenance Item"
+  },
+  "options": {},
+  "attributes": {
+    "MaintenanceText": {
+      "type": "text"
+    },
+    "MaintenanceTitle": {
+      "type": "string"
+    },
+    "DialogType": {
+      "type": "enumeration",
+      "enum": [
+        "Information",
+        "Block"
+      ]
+    },
+    "IsEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "ButtonText": {
+      "type": "string"
+    },
+    "RedirectUrl": {
+      "type": "string"
+    },
+    "PublishAt": {
+      "type": "datetime"
+    },
+    "UnpublishAt": {
+      "type": "datetime"
+    }
+  },
+  "config": {}
+}

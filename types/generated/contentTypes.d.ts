@@ -440,12 +440,13 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
-  collectionName: 'home_pages';
+export interface ApiMaintenancePageMaintenancePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'maintenance_pages';
   info: {
-    displayName: 'HomePage';
-    pluralName: 'home-pages';
-    singularName: 'home-page';
+    displayName: 'Maintenance Page';
+    pluralName: 'maintenance-pages';
+    singularName: 'maintenance-page';
   };
   options: {
     draftAndPublish: true;
@@ -457,13 +458,14 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::home-page.home-page'
+      'api::maintenance-page.maintenance-page'
     > &
       Schema.Attribute.Private;
-    Note: Schema.Attribute.Text;
+    MaintenanceItem: Schema.Attribute.Component<
+      'shared.maintenance-item',
+      false
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    SubTitle: Schema.Attribute.String;
-    Title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -981,7 +983,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::home-page.home-page': ApiHomePageHomePage;
+      'api::maintenance-page.maintenance-page': ApiMaintenancePageMaintenancePage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

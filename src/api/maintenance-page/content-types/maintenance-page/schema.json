@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "maintenance_pages",
+  "info": {
+    "singularName": "maintenance-page",
+    "pluralName": "maintenance-pages",
+    "displayName": "Maintenance Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "MaintenanceItem": {
+      "type": "component",
+      "component": "shared.maintenance-item",
+      "repeatable": false
+    }
+  }
+}
