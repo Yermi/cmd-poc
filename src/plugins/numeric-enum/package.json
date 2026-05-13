@@ -1,0 +1,10 @@
+{
+  "name": "strapi-plugin-numeric-enum",
+  "version": "0.0.1",
+  "private": true,
+  "strapi": {
+    "name": "numeric-enum",
+    "displayName": "Numeric enum",
+    "kind": "plugin"
+  }
+}
