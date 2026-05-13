@@ -64,23 +64,14 @@ How to use:
 
 1. Run `npm run develop` and open the Content-Type Builder.
 2. Add a field from the `Custom` tab and select `Numeric enum`.
-3. In field settings, set `Label/value pairs (JSON)` with a JSON array.
-
-Example JSON:
-
-```json
-[
-	{ "label": "Draft", "value": 0 },
-	{ "label": "Published", "value": 1 },
-	{ "label": "Archived", "value": 2 }
-]
-```
+3. In field settings, provide `Labels` and `Values`.
+4. Add one entry per line in both fields, in matching order.
 
 Notes:
 
 - `label` is shown in the admin dropdown.
 - `value` is persisted and returned by APIs.
-- Invalid JSON or non-numeric values are ignored in the dropdown.
+- Validation on save requires both lists to have the same length, integer numeric values, and unique values.
 
 ## ✨ Community
 

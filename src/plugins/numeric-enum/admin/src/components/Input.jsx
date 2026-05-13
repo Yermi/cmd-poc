@@ -1,5 +1,20 @@
 import React from 'react';
 
+const normalizeList = (value) => {
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry).trim()).filter((entry) => entry.length > 0);
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
+  }
+
+  return [];
+};
+
 const parsePairs = (rawPairs) => {
   if (typeof rawPairs !== 'string' || rawPairs.trim().length === 0) {
     return [];
@@ -29,6 +44,25 @@ const parsePairs = (rawPairs) => {
   }
 };
 
+const parseOptions = (attributeOptions) => {
+  const labels = normalizeList(attributeOptions?.labels);
+  const values = normalizeList(attributeOptions?.values);
+
+  if (labels.length > 0 && values.length > 0) {
+    const length = Math.min(labels.length, values.length);
+
+    return Array.from({ length })
+      .map((_, index) => ({
+        label: labels[index],
+        value: Number(values[index]),
+      }))
+      .filter((item) => item.label.length > 0 && Number.isFinite(item.value));
+  }
+
+  // Backward compatibility for old JSON-based configuration.
+  return parsePairs(attributeOptions?.pairs);
+};
+
 const Input = ({
   name,
   value,
@@ -39,7 +73,7 @@ const Input = ({
   intlLabel,
   error,
 }) => {
-  const options = parsePairs(attribute?.options?.pairs);
+  const options = parseOptions(attribute?.options);
   const normalizedValue = value === null || value === undefined ? '' : String(value);
 
   const handleChange = (event) => {
@@ -82,7 +116,7 @@ const Input = ({
       ) : null}
       {options.length === 0 ? (
         <p style={{ marginTop: '0.25rem', opacity: 0.8 }}>
-          Configure valid JSON pairs in the field options.
+          Configure labels and numeric values in field options.
         </p>
       ) : null}
     </div>

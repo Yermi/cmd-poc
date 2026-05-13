@@ -15,7 +15,14 @@
       "type": "customField",
       "customField": "plugin::numeric-enum.numeric-enum",
       "options": {
-        "pairs": "[{\"label\":\"Information\",\"value\":0},{\"label\":\"Block\",\"value\":1}]"
+        "labels": [
+          "Information",
+          "Block"
+        ],
+        "values": [
+          "0",
+          "1"
+        ]
       }
     },
     "IsEnabled": {
