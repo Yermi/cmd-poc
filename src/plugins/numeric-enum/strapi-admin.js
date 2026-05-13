@@ -1,9 +1,13 @@
 import Input from './admin/src/components/Input';
+import * as yup from 'yup';
+import PairsInput from './admin/src/components/PairsInput';
 
 const pluginId = 'numeric-enum';
 
 const plugin = {
   register(app) {
+    app.addFields({ type: 'pairs-editor', Component: PairsInput });
+
     app.customFields.register({
       name: 'numeric-enum',
       pluginId,
@@ -31,22 +35,70 @@ const plugin = {
             items: [
               {
                 name: 'options.pairs',
-                type: 'text',
+                type: 'pairs-editor',
                 intlLabel: {
                   id: 'numeric-enum.options.pairs.label',
-                  defaultMessage: 'Label/value pairs (JSON)',
+                  defaultMessage: 'Enum entries',
                 },
-                description: {
-                  id: 'numeric-enum.options.pairs.description',
-                  defaultMessage:
-                    'Use JSON array: [{"label":"Draft","value":0},{"label":"Published","value":1}]',
-                },
+                value: '[]',
               },
             ],
           },
         ],
-        validator: () => ({}),
+        validator: () => ({
+          pairs: yup
+            .string()
+            .test(
+              'valid-pairs',
+              {
+                id: 'numeric-enum.options.pairs.invalid',
+                defaultMessage: 'Add at least one entry with a label and a numeric value.',
+              },
+              (val) => {
+                try {
+                  const arr = JSON.parse(val || '[]');
+                  if (!Array.isArray(arr) || arr.length === 0) return false;
+                  const valid = arr.filter(
+                    (p) =>
+                      p &&
+                      typeof p.label === 'string' &&
+                      p.label.trim().length > 0 &&
+                      Number.isFinite(Number(p.value))
+                  );
+                  return valid.length > 0;
+                } catch {
+                  return false;
+                }
+              }
+            )
+            .test(
+              'unique-values',
+              {
+                id: 'numeric-enum.options.pairs.unique',
+                defaultMessage: 'Values must be unique.',
+              },
+              (val) => {
+                try {
+                  const arr = JSON.parse(val || '[]');
+                  if (!Array.isArray(arr)) return false;
+                  const nums = arr.map((p) => Number(p.value));
+                  return new Set(nums).size === nums.length;
+                } catch {
+                  return false;
+                }
+              }
+            ),
+        }),
       },
+    });
+  },
+  bootstrap(app) {
+    const ctbPlugin = app.getPlugin('content-type-builder');
+    const formsAPI = ctbPlugin?.apis?.forms;
+
+    formsAPI?.components?.add({
+      id: 'pairs-editor',
+      component: PairsInput,
     });
   },
 };

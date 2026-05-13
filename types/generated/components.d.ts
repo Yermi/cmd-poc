@@ -7,7 +7,15 @@ export interface SharedMaintenanceItem extends Struct.ComponentSchema {
   };
   attributes: {
     ButtonText: Schema.Attribute.String;
-    DialogType: Schema.Attribute.Enumeration<['Information', 'Block']>;
+    DialogType: Schema.Attribute.Integer &
+      Schema.Attribute.CustomField<
+        'plugin::numeric-enum.numeric-enum',
+        {
+          labels: ['Information', 'Block'];
+          pairs: '[{"label":"Information","value":""},{"label":"Block","value":1}]';
+          values: ['0', '1'];
+        }
+      >;
     IsEnabled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     MaintenanceText: Schema.Attribute.Text;
     MaintenanceTitle: Schema.Attribute.String;
