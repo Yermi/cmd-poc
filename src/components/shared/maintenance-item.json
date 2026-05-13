@@ -12,11 +12,11 @@
       "type": "string"
     },
     "DialogType": {
-      "type": "enumeration",
-      "enum": [
-        "Information",
-        "Block"
-      ]
+      "type": "customField",
+      "customField": "plugin::numeric-enum.numeric-enum",
+      "options": {
+        "pairs": "[{\"label\":\"Information\",\"value\":0},{\"label\":\"Block\",\"value\":1}]"
+      }
     },
     "IsEnabled": {
       "type": "boolean",
