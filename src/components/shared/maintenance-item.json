@@ -22,7 +22,8 @@
         "values": [
           "0",
           "1"
-        ]
+        ],
+        "pairs": "[{\"label\":\"Information\",\"value\":\"\"},{\"label\":\"Block\",\"value\":1}]"
       }
     },
     "IsEnabled": {

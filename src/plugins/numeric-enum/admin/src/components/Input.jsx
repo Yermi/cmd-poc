@@ -1,4 +1,5 @@
 import React from 'react';
+import { Field, SingleSelect, SingleSelectOption } from '@strapi/design-system';
 
 const normalizeList = (value) => {
   if (Array.isArray(value)) {
@@ -45,6 +46,13 @@ const parsePairs = (rawPairs) => {
 };
 
 const parseOptions = (attributeOptions) => {
+  // New pairs format from PairsInput
+  if (attributeOptions?.pairs) {
+    const result = parsePairs(attributeOptions.pairs);
+    if (result.length > 0) return result;
+  }
+
+  // Legacy separate labels/values arrays
   const labels = normalizeList(attributeOptions?.labels);
   const values = normalizeList(attributeOptions?.values);
 
@@ -75,51 +83,43 @@ const Input = ({
 }) => {
   const options = parseOptions(attribute?.options);
   const normalizedValue = value === null || value === undefined ? '' : String(value);
+  const errorMessage = typeof error === 'string' ? error : error?.defaultMessage;
+  const hint =
+    options.length === 0 ? 'Configure labels and numeric values in field options.' : undefined;
 
-  const handleChange = (event) => {
-    const nextValue = event.target.value;
+  const handleChange = (nextValue) => {
+    const stringValue = nextValue === undefined || nextValue === null ? '' : String(nextValue);
 
     onChange({
       target: {
         name,
         type: attribute?.type || 'integer',
-        value: nextValue === '' ? null : Number(nextValue),
+        value: stringValue === '' ? null : Number(stringValue),
       },
     });
   };
 
   return (
-    <div>
-      <label htmlFor={name} style={{ display: 'block', marginBottom: '0.25rem' }}>
-        {intlLabel?.defaultMessage || name}
-      </label>
-      <select
+    <Field.Root name={name} error={errorMessage} hint={hint} required={required}>
+      <Field.Label>{intlLabel?.defaultMessage || name}</Field.Label>
+      <SingleSelect
         id={name}
         name={name}
-        value={normalizedValue}
+        value={normalizedValue === '' ? undefined : normalizedValue}
         onChange={handleChange}
         disabled={disabled}
         required={required}
-        style={{ width: '100%', minHeight: '2.25rem' }}
+        placeholder="Select..."
       >
-        <option value="">Select...</option>
         {options.map((option) => (
-          <option key={option.value} value={String(option.value)}>
+          <SingleSelectOption key={option.value} value={String(option.value)}>
             {option.label}
-          </option>
+          </SingleSelectOption>
         ))}
-      </select>
-      {error ? (
-        <p style={{ color: '#c00', marginTop: '0.25rem' }}>
-          {error.defaultMessage || 'Invalid value'}
-        </p>
-      ) : null}
-      {options.length === 0 ? (
-        <p style={{ marginTop: '0.25rem', opacity: 0.8 }}>
-          Configure labels and numeric values in field options.
-        </p>
-      ) : null}
-    </div>
+      </SingleSelect>
+      <Field.Error />
+      <Field.Hint />
+    </Field.Root>
   );
 };
 

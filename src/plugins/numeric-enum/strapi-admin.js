@@ -1,10 +1,13 @@
 import Input from './admin/src/components/Input';
 import * as yup from 'yup';
+import PairsInput from './admin/src/components/PairsInput';
 
 const pluginId = 'numeric-enum';
 
 const plugin = {
   register(app) {
+    app.addFields({ type: 'pairs-editor', Component: PairsInput });
+
     app.customFields.register({
       name: 'numeric-enum',
       pluginId,
@@ -31,110 +34,71 @@ const plugin = {
             },
             items: [
               {
-                name: 'options.labels',
-                type: 'textarea-enum',
+                name: 'options.pairs',
+                type: 'pairs-editor',
                 intlLabel: {
-                  id: 'numeric-enum.options.labels.label',
-                  defaultMessage: 'Labels',
+                  id: 'numeric-enum.options.pairs.label',
+                  defaultMessage: 'Enum entries',
                 },
-                description: {
-                  id: 'numeric-enum.options.labels.description',
-                  defaultMessage: 'One label per line.',
-                },
-                placeholder: {
-                  id: 'numeric-enum.options.labels.placeholder',
-                  defaultMessage: 'Ex:\nInformation\nBlock',
-                },
-                value: ['Information'],
-              },
-              {
-                name: 'options.values',
-                type: 'textarea-enum',
-                intlLabel: {
-                  id: 'numeric-enum.options.values.label',
-                  defaultMessage: 'Values',
-                },
-                description: {
-                  id: 'numeric-enum.options.values.description',
-                  defaultMessage: 'One numeric value per line, aligned by row with labels.',
-                },
-                placeholder: {
-                  id: 'numeric-enum.options.values.placeholder',
-                  defaultMessage: 'Ex:\n0\n1',
-                },
-                value: [],
+                value: '[]',
               },
             ],
           },
         ],
         validator: () => ({
-          labels: yup
-            .array()
-            .of(
-              yup.string().trim().required({
-                id: 'numeric-enum.options.labels.required',
-                defaultMessage: 'Each label is required.',
-              })
-            )
-            .min(1, {
-              id: 'numeric-enum.options.labels.min',
-              defaultMessage: 'Add at least one label.',
-            }),
-          values: yup
-            .array()
-            .of(
-              yup
-                .number()
-                .typeError({
-                  id: 'numeric-enum.options.values.numeric',
-                  defaultMessage: 'Each value must be numeric.',
-                })
-                .integer({
-                  id: 'numeric-enum.options.values.integer',
-                  defaultMessage: 'Each value must be an integer.',
-                })
-                .required({
-                  id: 'numeric-enum.options.values.required',
-                  defaultMessage: 'Each value is required.',
-                })
-            )
-            .min(1, {
-              id: 'numeric-enum.options.values.min',
-              defaultMessage: 'Add at least one value.',
-            })
+          pairs: yup
+            .string()
             .test(
-              'same-length-as-labels',
+              'valid-pairs',
               {
-                id: 'numeric-enum.options.values.length',
-                defaultMessage: 'Labels and values must have the same number of rows.',
+                id: 'numeric-enum.options.pairs.invalid',
+                defaultMessage: 'Add at least one entry with a label and a numeric value.',
               },
-              function validateLength(values) {
-                const labels = this.parent?.labels;
-
-                if (!Array.isArray(labels) || !Array.isArray(values)) {
+              (val) => {
+                try {
+                  const arr = JSON.parse(val || '[]');
+                  if (!Array.isArray(arr) || arr.length === 0) return false;
+                  const valid = arr.filter(
+                    (p) =>
+                      p &&
+                      typeof p.label === 'string' &&
+                      p.label.trim().length > 0 &&
+                      Number.isFinite(Number(p.value))
+                  );
+                  return valid.length > 0;
+                } catch {
                   return false;
                 }
-
-                return labels.length === values.length;
               }
             )
             .test(
               'unique-values',
               {
-                id: 'numeric-enum.options.values.unique',
+                id: 'numeric-enum.options.pairs.unique',
                 defaultMessage: 'Values must be unique.',
               },
-              (values) => {
-                if (!Array.isArray(values)) {
+              (val) => {
+                try {
+                  const arr = JSON.parse(val || '[]');
+                  if (!Array.isArray(arr)) return false;
+                  const nums = arr.map((p) => Number(p.value));
+                  return new Set(nums).size === nums.length;
+                } catch {
                   return false;
                 }
-
-                const normalizedValues = values.map((entry) => Number(entry));
-                return new Set(normalizedValues).size === normalizedValues.length;
               }
             ),
         }),
       },
+    });
+  },
+  bootstrap(app) {
+    const ctbPlugin = app.getPlugin('content-type-builder');
+    const formsAPI = ctbPlugin?.apis?.forms;
+
+    formsAPI?.components?.add({
+      id: 'pairs-editor',
+      component: PairsInput,
     });
   },
 };
