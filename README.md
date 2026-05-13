@@ -50,6 +50,38 @@ yarn strapi deploy
 
 Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
 
+## Numeric enum custom field
+
+This project includes a local plugin at `src/plugins/numeric-enum` that adds a custom field named `Numeric enum`.
+
+Purpose:
+
+- Editors select a label from a dropdown.
+- The saved value is numeric (`integer` type).
+- API responses return the numeric value.
+
+How to use:
+
+1. Run `npm run develop` and open the Content-Type Builder.
+2. Add a field from the `Custom` tab and select `Numeric enum`.
+3. In field settings, set `Label/value pairs (JSON)` with a JSON array.
+
+Example JSON:
+
+```json
+[
+	{ "label": "Draft", "value": 0 },
+	{ "label": "Published", "value": 1 },
+	{ "label": "Archived", "value": 2 }
+]
+```
+
+Notes:
+
+- `label` is shown in the admin dropdown.
+- `value` is persisted and returned by APIs.
+- Invalid JSON or non-numeric values are ignored in the dropdown.
+
 ## ✨ Community
 
 - [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
